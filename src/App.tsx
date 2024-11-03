@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -45,6 +45,8 @@ export default function WDCCalculator() {
   });
   const [champion, setChampion] = useState<Driver | null>(null);
   const [remainingPoints, setRemainingPoints] = useState(0);
+  const totalsRef = useRef<HTMLDivElement>(null);
+  const [showFloatingTotals, setShowFloatingTotals] = useState(false);
 
   const handlePositionChange = (
     driver: Driver,
@@ -137,8 +139,20 @@ export default function WDCCalculator() {
     return pointsNeeded > 0 ? pointsNeeded : 0;
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (totalsRef.current) {
+        const { top } = totalsRef.current.getBoundingClientRect();
+        setShowFloatingTotals(top < 0);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 p-4 space-y-6">
+    <div className="min-h-screen bg-gray-900 text-gray-100 p-4 space-y-0">
       {champion && (
         <Alert className="bg-yellow-900 border-yellow-600">
           <Trophy className="h-4 w-4 text-yellow-400" />
@@ -153,7 +167,10 @@ export default function WDCCalculator() {
 
       <Card className="bg-gray-800 border-gray-700">
         <CardContent className="p-6">
-          <div className="grid grid-cols-2 gap-4 text-center mb-6">
+          <div
+            ref={totalsRef}
+            className="grid grid-cols-2 gap-4 text-center mb-6"
+          >
             {drivers.map((driver) => (
               <div key={driver} className="space-y-2">
                 <div className="flex justify-center items-center">
@@ -163,7 +180,7 @@ export default function WDCCalculator() {
                     className="object-contain h-12 w-24"
                   />
                 </div>
-                <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
+                <p className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
                   {results[driver]} points
                 </p>
                 {calculatePointsNeeded(driver) !== null && (
@@ -253,6 +270,24 @@ export default function WDCCalculator() {
           ))}
         </CardContent>
       </Card>
+      {showFloatingTotals && (
+        <div className="fixed top-0 left-0 right-0 bg-gray-800 z-10 p-4 shadow-md">
+          <div className="max-w-screen-xl mx-auto flex justify-between items-center">
+            {drivers.map((driver) => (
+              <div key={driver} className="flex items-center space-x-4">
+                <img
+                  src={driverLogos[driver]}
+                  alt={`${driver} logo`}
+                  className="object-contain h-8 w-16"
+                />
+                <p className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
+                  {results[driver]} points
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
