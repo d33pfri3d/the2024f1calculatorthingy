@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Trophy } from "lucide-react";
-
 const races = [
   { name: "Brazil Sprint", isSprint: true, flag: "🇧🇷" },
   { name: "Brazil", isSprint: false, flag: "🇧🇷" },
