@@ -108,10 +108,10 @@ export default function Component() {
     });
 
     setResults(newResults);
-
-    const [leader, follower] = drivers.sort(
+    const sortedDrivers = [...drivers].sort(
       (a, b) => newResults[b] - newResults[a]
     );
+    const [leader, follower] = sortedDrivers;
     if (newResults[leader] > newResults[follower] + remainingPoints) {
       setChampion(leader);
     } else {
