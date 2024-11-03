@@ -163,7 +163,7 @@ export default function WDCCalculator() {
                     className="object-contain h-12 w-24"
                   />
                 </div>
-                <p className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
+                <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
                   {results[driver]} points
                 </p>
                 {calculatePointsNeeded(driver) !== null && (
